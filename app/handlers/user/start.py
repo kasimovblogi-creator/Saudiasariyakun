@@ -3,6 +3,8 @@ from aiogram.filters import CommandStart
 from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 
+from app.config.settings import ADMIN_ID
+
 from app.states.register import RegisterState
 
 from app.keyboards.contact import contact_keyboard
@@ -86,6 +88,18 @@ async def phone_handler(
         full_name=message.from_user.full_name,
         phone=message.contact.phone_number,
         username=message.from_user.username
+    )
+
+    user_count = await UserRepository.get_users_count()
+
+    await message.bot.send_message(
+        ADMIN_ID,
+        f"🆕 Yangi foydalanuvchi qo'shildi\n\n"
+        f"👤 Ism: {message.from_user.full_name}\n"
+        f"📞 Telefon: {message.contact.phone_number}\n"
+        f"👤 Username: @{message.from_user.username if message.from_user.username else 'Mavjud emas'}\n"
+        f"🆔 Telegram ID: {message.from_user.id}\n\n"
+        f"📊 Umumiy foydalanuvchilar: {user_count}"
     )
 
     await state.clear()

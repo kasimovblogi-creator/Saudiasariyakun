@@ -43,7 +43,7 @@ class UserRepository:
             return user
 
     @staticmethod
-    async def get_total():
+    async def get_users_count():
 
         async with async_session() as session:
 
