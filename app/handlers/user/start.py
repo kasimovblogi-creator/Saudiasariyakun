@@ -109,3 +109,8 @@ async def phone_handler(
         "📌 Endi quyidagi menyudan xizmat tanlang:",
         reply_markup=main_menu
     )
+    @router.message()
+async def get_chat_id(message: Message):
+    await message.answer(
+        f"Chat ID: {message.chat.id}"
+    )
