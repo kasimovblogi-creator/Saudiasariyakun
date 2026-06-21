@@ -1,42 +1,47 @@
-from aiogram.types import (
-    InlineKeyboardMarkup,
-    InlineKeyboardButton
+from aiogram import Router, F
+from aiogram.types import CallbackQuery
+from aiogram.fsm.context import FSMContext
+
+from app.states.register import RegisterState
+from app.keyboards.contact import contact_keyboard
+
+from app.utils.subscription import (
+    check_subscription
 )
 
-from app.config.settings import CHANNEL_USERNAME
+router = Router()
 
 
-async def check_subscription(
-    bot,
-    user_id: int
+@router.callback_query(F.data == "check_subscription")
+async def check_sub_callback(
+    callback: CallbackQuery,
+    state: FSMContext
 ):
-    member = await bot.get_chat_member(
-        CHANNEL_USERNAME,
-        user_id
+
+    is_subscribed = await check_subscription(
+        callback.bot,
+        callback.from_user.id
     )
 
-    return member.status in [
-        "member",
-        "administrator",
-        "creator"
-    ]
+    if not is_subscribed:
+        await callback.answer(
+            "❌ Siz hali kanalga obuna bo'lmagansiz.",
+            show_alert=True
+        )
+        return
 
-
-def subscribe_keyboard():
-
-    return InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(
-                    text="📢 Kanalga obuna bo'lish",
-                    url=f"https://t.me/{CHANNEL_USERNAME.replace('@', '')}"
-                )
-            ],
-            [
-                InlineKeyboardButton(
-                    text="✅ Obunani tekshirish",
-                    callback_data="check_subscription"
-                )
-            ]
-        ]
+    await state.set_state(
+        RegisterState.waiting_phone
     )
+
+    await callback.message.edit_text(
+        "✅ Obunangiz muvaffaqiyatli tasdiqlandi!\n\n"
+        "📱 Endi telefon raqamingizni yuboring."
+    )
+
+    await callback.message.answer(
+        "Telefon raqamingizni yuborish uchun tugmani bosing 👇",
+        reply_markup=contact_keyboard
+    )
+
+    await callback.answer()

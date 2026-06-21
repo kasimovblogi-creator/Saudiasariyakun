@@ -102,9 +102,15 @@ async def phone_handler(
 
     await state.clear()
 
-    await message.answer(
-        "✅ Ro'yxatdan o'tish muvaffaqiyatli yakunlandi!\n\n"
-        "🤝 Saudiya Sari platformasiga xush kelibsiz.\n\n"
-        "📌 Endi quyidagi menyudan xizmat tanlang:",
-        reply_markup=main_menu
-    )
+ await message.answer(
+    f"✅ Ro'yxatdan o'tish muvaffaqiyatli yakunlandi!\n\n"
+    f"🤝 Assalomu alaykum, {message.from_user.full_name}!\n\n"
+    f"🇸🇦 Saudiya Sari platformasiga xush kelibsiz.\n\n"
+    f"📚 Botdan to'liq foydalanish uchun quyidagi menyudan kerakli xizmatni tanlang.\n\n"
+    f"🎁 Bepul qo'llanmani ko'rish:\n"
+    f"https://youtu.be/RKblPCGf0TQ\n\n"
+    f"👨‍💼 Administrator bilan hoziroq bog'lanish:\n"
+    f"👉 @saudia_sari\n\n"
+    f"📌 Quyidagi menyudan kerakli xizmatni tanlang.",
+    reply_markup=main_menu
+)
