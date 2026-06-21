@@ -101,15 +101,15 @@ async def phone_handler(
         f"📊 Umumiy foydalanuvchilar: {user_count}"
     )
 
-    await state.clear()
+  await message.answer(
+    "✅ Ro'yxatdan o'tish muvaffaqiyatli yakunlandi!\n\n"
+    "🤝 Saudiya Sari platformasiga xush kelibsiz.\n\n"
+    "📌 Endi quyidagi menyudan xizmat tanlang:",
+    reply_markup=main_menu
+)
 
-    await message.answer(
-        "✅ Ro'yxatdan o'tish muvaffaqiyatli yakunlandi!\n\n"
-        "🤝 Saudiya Sari platformasiga xush kelibsiz.\n\n"
-        "📌 Endi quyidagi menyudan xizmat tanlang:",
-        reply_markup=main_menu
-    )
-    @router.message()
+
+@router.message()
 async def get_chat_id(message: Message):
     await message.answer(
         f"Chat ID: {message.chat.id}"
