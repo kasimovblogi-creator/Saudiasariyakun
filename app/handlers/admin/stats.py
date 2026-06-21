@@ -2,7 +2,7 @@ from aiogram import Router
 from aiogram.filters import Command
 from aiogram.types import Message
 
-from app.config.settings import ADMIN_ID
+from app.config.settings import GROUP_ID
 
 from app.repositories.user_repository import UserRepository
 from app.repositories.lead_repository import LeadRepository
