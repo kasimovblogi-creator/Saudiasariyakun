@@ -1,16 +1,16 @@
-@router.message(RegisterState.waiting_phone)
-async def phone_handler(
-    message: Message,
-    state: FSMContext
-):
-    print("PHONE HANDLER ISHLADI")
-    print("CONTACT:", message.contact)
-    print("TEXT:", message.text)
+from aiogram.types import (
+    KeyboardButton,
+    ReplyKeyboardMarkup
+)
 
-    if not message.contact:
-        await message.answer(
-            "❗ Iltimos, telefon raqamni tugma orqali yuboring."
-        )
-        return
-
-    await message.answer("TEST PHONE QABUL QILINDI")
+contact_keyboard = ReplyKeyboardMarkup(
+    keyboard=[
+        [
+            KeyboardButton(
+                text="📱 Telefon raqam yuborish",
+                request_contact=True
+            )
+        ]
+    ],
+    resize_keyboard=True
+)
