@@ -3,7 +3,7 @@ from aiogram.filters import CommandStart
 from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 
-from app.config.settings import ADMIN_ID
+from app.config.settings import GROUP_ID
 
 from app.states.register import RegisterState
 
@@ -75,7 +75,6 @@ async def phone_handler(
     message: Message,
     state: FSMContext
 ):
-
     if not message.contact:
         await message.answer(
             "❗ Iltimos, telefon raqamni tugma orqali yuboring."
@@ -92,7 +91,7 @@ async def phone_handler(
     user_count = await UserRepository.get_users_count()
 
     await message.bot.send_message(
-        ADMIN_ID,
+        GROUP_ID,
         f"🆕 Yangi foydalanuvchi qo'shildi\n\n"
         f"👤 Ism: {message.from_user.full_name}\n"
         f"📞 Telefon: {message.contact.phone_number}\n"
@@ -100,6 +99,7 @@ async def phone_handler(
         f"🆔 Telegram ID: {message.from_user.id}\n\n"
         f"📊 Umumiy foydalanuvchilar: {user_count}"
     )
+
     await state.clear()
 
     await message.answer(
@@ -107,11 +107,4 @@ async def phone_handler(
         "🤝 Saudiya Sari platformasiga xush kelibsiz.\n\n"
         "📌 Endi quyidagi menyudan xizmat tanlang:",
         reply_markup=main_menu
-    )
-
-
-@router.message()
-async def get_chat_id(message: Message):
-    await message.answer(
-        f"Chat ID: {message.chat.id}"
     )
