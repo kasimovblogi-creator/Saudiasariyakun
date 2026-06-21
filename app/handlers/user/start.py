@@ -25,19 +25,6 @@ async def start_handler(
     message: Message,
     state: FSMContext
 ):
-    is_subscribed = await check_subscription(
-        message.bot,
-        message.from_user.id
-    )
-
-    if not is_subscribed:
-        await message.answer(
-            "📢 Botdan foydalanish uchun avval kanalimizga obuna bo'ling.\n\n"
-            "Obuna bo'lgach qayta /start bosing.",
-            reply_markup=subscribe_keyboard()
-        )
-        return
-
     user = await UserRepository.get_by_telegram_id(
         message.from_user.id
     )
@@ -46,16 +33,21 @@ async def start_handler(
         await message.answer(
             f"🤝 Assalomu alaykum, {user.full_name}!\n\n"
             "🇸🇦 Saudiya Sari platformasiga xush kelibsiz.\n\n"
-            "Biz sizga Saudiya Arabistonida:\n\n"
-            "🎓 Universitetlarga hujjat topshirish\n"
-            "🕋 Umra safarlari\n"
-            "🛂 Viza xizmatlari\n"
-            "✈️ Aviabiletlar\n"
-            "🏨 Mehmonxona va hostel bron qilish\n"
-            "🚕 Transport xizmatlari\n\n"
-            "shu sohalarda yordam beramiz.\n\n"
             "📌 Kerakli xizmatni menyudan tanlang.",
             reply_markup=main_menu
+        )
+        return
+
+    is_subscribed = await check_subscription(
+        message.bot,
+        message.from_user.id
+    )
+
+    if not is_subscribed:
+        await message.answer(
+            "📢 Botdan foydalanish uchun avval kanalimizga obuna bo'ling.\n\n"
+            "Obuna bo'lgach '✅ Obunani tekshirish' tugmasini bosing.",
+            reply_markup=subscribe_keyboard()
         )
         return
 
@@ -64,8 +56,7 @@ async def start_handler(
     )
 
     await message.answer(
-        "🇸🇦 Saudiya Sari platformasiga xush kelibsiz!\n\n"
-        "Botdan foydalanish uchun telefon raqamingizni yuboring 📱",
+        "📱 Telefon raqamingizni yuboring:",
         reply_markup=contact_keyboard
     )
 
@@ -75,9 +66,11 @@ async def phone_handler(
     message: Message,
     state: FSMContext
 ):
+    print("PHONE HANDLER ISHLADI")
+
     if not message.contact:
         await message.answer(
-            "❗ Iltimos, telefon raqamni tugma orqali yuboring."
+            "❗ Telefon raqamni tugma orqali yuboring."
         )
         return
 
@@ -90,15 +83,18 @@ async def phone_handler(
 
     user_count = await UserRepository.get_users_count()
 
-    await message.bot.send_message(
-        GROUP_ID,
-        f"🆕 Yangi foydalanuvchi qo'shildi\n\n"
-        f"👤 Ism: {message.from_user.full_name}\n"
-        f"📞 Telefon: {message.contact.phone_number}\n"
-        f"👤 Username: @{message.from_user.username if message.from_user.username else 'Mavjud emas'}\n"
-        f"🆔 Telegram ID: {message.from_user.id}\n\n"
-        f"📊 Umumiy foydalanuvchilar: {user_count}"
-    )
+    try:
+        await message.bot.send_message(
+            GROUP_ID,
+            f"🆕 Yangi foydalanuvchi qo'shildi\n\n"
+            f"👤 Ism: {message.from_user.full_name}\n"
+            f"📞 Telefon: {message.contact.phone_number}\n"
+            f"👤 Username: @{message.from_user.username if message.from_user.username else 'Mavjud emas'}\n"
+            f"🆔 Telegram ID: {message.from_user.id}\n\n"
+            f"📊 Umumiy foydalanuvchilar: {user_count}"
+        )
+    except Exception as e:
+        print("GROUP XATOSI:", e)
 
     await state.clear()
 
@@ -106,11 +102,9 @@ async def phone_handler(
         f"✅ Ro'yxatdan o'tish muvaffaqiyatli yakunlandi!\n\n"
         f"🤝 Assalomu alaykum, {message.from_user.full_name}!\n\n"
         f"🇸🇦 Saudiya Sari platformasiga xush kelibsiz.\n\n"
-        f"📚 Botdan to'liq foydalanish uchun quyidagi menyudan kerakli xizmatni tanlang.\n\n"
-        f"🎁 Bepul qo'llanmani ko'rish:\n"
+        f"🎁 Bepul qo'llanma:\n"
         f"https://youtu.be/RKblPCGf0TQ\n\n"
-        f"👨‍💼 Administrator bilan hoziroq bog'lanish:\n"
-        f"👉 @saudia_sari\n\n"
-        f"📌 Quyidagi menyudan kerakli xizmatni tanlang.",
+        f"👨‍💼 Administrator:\n"
+        f"@saudia_sari",
         reply_markup=main_menu
     )
