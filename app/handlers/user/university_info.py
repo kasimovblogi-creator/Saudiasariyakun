@@ -5,10 +5,6 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from app.keyboards.inline_universities import (
     universities_page_1
 )
-from app.keyboards.inline_universities import (
-    universities_page_1,
-    universities_page_2
-)
 
 router = Router()
 

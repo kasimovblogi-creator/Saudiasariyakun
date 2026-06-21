@@ -25,7 +25,10 @@ async def start_handler(
     message: Message,
     state: FSMContext
 ):
-
+print(
+    f"CHAT_ID={message.chat.id}, "
+    f"TYPE={message.chat.type}"
+)
     is_subscribed = await check_subscription(
         message.bot,
         message.from_user.id
@@ -109,4 +112,8 @@ async def phone_handler(
         "🤝 Saudiya Sari platformasiga xush kelibsiz.\n\n"
         "📌 Endi quyidagi menyudan xizmat tanlang:",
         reply_markup=main_menu
-    )
+    ) @router.message()
+async def get_chat_id(message: Message):
+await message.answer(
+f"Chat ID: {message.chat.id}"
+)
