@@ -46,10 +46,11 @@ async def university_ready(callback: CallbackQuery):
     )
 
     await callback.bot.send_message(
-        ADMIN_ID,
-        f"🎓 Yangi universitet arizasi\n\n"
+        GROUP_ID,
+        f"🎓 YANGI UNIVERSITET ARIZASI\n\n"
         f"👤 Ism: {user.full_name}\n"
-        f"📱 Telefon: {user.phone}\n\n"
+        f"📱 Telefon: {user.phone}\n"
+        f"🆔 Telegram ID: {callback.from_user.id}\n\n"
         f"✅ Hujjatlari tayyor"
     )
 
@@ -65,7 +66,8 @@ async def university_ready(callback: CallbackQuery):
 async def university_not_ready(callback: CallbackQuery):
 
     await callback.message.edit_text(
-        "📌 Hujjatlaringiz tayyor bo'lgach qayta murojaat qiling."
+        "📌 Hujjatlaringiz tayyor bo'lgach qayta murojaat qiling.\n\n"
+        "👨‍💼 Operator: @saudia_sari"
     )
 
     await callback.answer()

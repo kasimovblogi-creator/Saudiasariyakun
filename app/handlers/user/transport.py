@@ -34,10 +34,11 @@ async def transport_handler(message: Message):
     )
 
     await message.bot.send_message(
-        ADMIN_ID,
-        f"🚕 Yangi transport so'rovi\n\n"
+        GROUP_ID,
+        f"🚕 YANGI TRANSPORT SO'ROVI\n\n"
         f"👤 Ism: {user.full_name}\n"
-        f"📱 Telefon: {user.phone}\n\n"
+        f"📱 Telefon: {user.phone}\n"
+        f"🆔 Telegram ID: {message.from_user.id}\n\n"
         f"🚘 Xizmat turi: {message.text}"
     )
 

@@ -2,6 +2,9 @@ from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
+from app.config.settings import GROUP_ID
+from app.repositories.user_repository import UserRepository
+
 from app.keyboards.inline_universities import (
     universities_page_1
 )
@@ -77,9 +80,7 @@ async def kku_about(callback: CallbackQuery):
         "🏫 King Khalid University\n\n"
         "📍 Joylashuvi: Abha, Asir viloyati, Saudiya Arabistoni\n\n"
         "📅 Tashkil etilgan: 1998-yil\n\n"
-        "King Khalid University 1998-yilda Imam Muhammad bin Saud Islamic University va King Saud University filiallari birlashtirilishi natijasida tashkil etilgan.\n\n"
-        "Bugungi kunda universitet Saudiya Arabistonining eng yirik davlat universitetlaridan biri hisoblanadi. Unda 50 000 dan ortiq talaba tahsil oladi hamda 26 ta kollej tarkibida 180 dan ortiq ta'lim dasturlari mavjud.\n\n"
-        "Universitet Asir mintaqasidagi yetakchi oliy ta'lim muassasalaridan biri bo'lib, bakalavr, magistratura va doktorantura bosqichlarida ta'lim beradi."
+        "King Khalid University Saudiya Arabistonining eng yirik davlat universitetlaridan biridir."
     )
 
     await callback.answer()
@@ -90,15 +91,12 @@ async def kku_benefits(callback: CallbackQuery):
 
     await callback.message.edit_text(
         "🎁 King Khalid University imtiyozlari\n\n"
-        "💵 Talabalarga beriladigan imkoniyatlar:\n\n"
         "✔️ Oylik stipendiya\n"
         "✔️ Bepul yotoqxona\n"
         "✔️ Aviabilet\n"
         "✔️ Tibbiy sug'urta\n"
         "✔️ Haj va Umra imkoniyati\n"
-        "✔️ Arzon universitet restoranlari\n"
-        "✔️ Oilani Saudiyaga olib kelish imkoniyati\n\n"
-        "⚠️ Ayrim imtiyozlar fakultet va qabul dasturiga qarab farq qilishi mumkin."
+        "✔️ Oilani Saudiyaga olib kelish imkoniyati"
     )
 
     await callback.answer()
@@ -113,8 +111,7 @@ async def kku_documents(callback: CallbackQuery):
         "✔️ Attestat yoki diplom\n"
         "✔️ Sudlanmaganlik ma'lumotnomasi\n"
         "✔️ 086 forma\n"
-        "✔️ 4×6 surat\n\n"
-        "⚠️ Qo'shimcha hujjatlar talab qilinishi mumkin."
+        "✔️ 4×6 surat"
     )
 
     await callback.answer()
@@ -123,9 +120,59 @@ async def kku_documents(callback: CallbackQuery):
 @router.callback_query(F.data == "kku_apply")
 async def kku_apply(callback: CallbackQuery):
 
-    await callback.message.answer(
-        "📝 Hujjat topshirish uchun Universitetlar menyusidagi "
-        "'📝 Hujjat topshirish' bo'limidan foydalaning."
+    builder = InlineKeyboardBuilder()
+
+    builder.button(
+        text="✅ Ha, tayyor",
+        callback_data="kku_apply_yes"
+    )
+
+    builder.button(
+        text="❌ Yo'q, tayyor emas",
+        callback_data="kku_apply_no"
+    )
+
+    builder.adjust(1)
+
+    await callback.message.edit_text(
+        "📄 Hujjatlaringiz tayyormi?",
+        reply_markup=builder.as_markup()
+    )
+
+    await callback.answer()
+
+
+@router.callback_query(F.data == "kku_apply_yes")
+async def kku_apply_yes(callback: CallbackQuery):
+
+    user = await UserRepository.get_by_telegram_id(
+        callback.from_user.id
+    )
+
+    await callback.bot.send_message(
+        GROUP_ID,
+        f"🎓 YANGI UNIVERSITET SO'ROVI\n\n"
+        f"🏫 Universitet: King Khalid University\n"
+        f"👤 Ism: {user.full_name}\n"
+        f"📱 Telefon: {user.phone}\n"
+        f"🆔 Telegram ID: {callback.from_user.id}\n\n"
+        f"📄 Hujjatlar tayyor: HA"
+    )
+
+    await callback.message.edit_text(
+        "✅ So'rovingiz qabul qilindi.\n\n"
+        "Operator tez orada siz bilan bog'lanadi."
+    )
+
+    await callback.answer()
+
+
+@router.callback_query(F.data == "kku_apply_no")
+async def kku_apply_no(callback: CallbackQuery):
+
+    await callback.message.edit_text(
+        "📄 Hujjatlaringiz tayyor bo'lgach qayta murojaat qiling.\n\n"
+        "👨‍💼 Operator: @saudia_sari"
     )
 
     await callback.answer()

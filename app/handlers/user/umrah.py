@@ -41,11 +41,12 @@ async def umrah_package_handler(message: Message):
     )
 
     await message.bot.send_message(
-        ADMIN_ID,
-        f"🕋 Yangi Umra so'rovi\n\n"
+        GROUP_ID,
+        f"🕋 YANGI UMRA SO'ROVI\n\n"
         f"👤 Ism: {user.full_name}\n"
-        f"📱 Telefon: {user.phone}\n\n"
-        f"📦 Tanlangan paket: {message.text}"
+        f"📱 Telefon: {user.phone}\n"
+        f"🆔 Telegram ID: {message.from_user.id}\n\n"
+        f"📦 Paket: {message.text}"
     )
 
     await message.answer(

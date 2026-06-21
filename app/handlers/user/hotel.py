@@ -94,10 +94,11 @@ async def guests_handler(
     )
 
     await message.bot.send_message(
-        ADMIN_ID,
-        f"🏨 Yangi mehmonxona so'rovi\n\n"
+        GROUP_ID,
+        f"🏨 YANGI MEHMONXONA SO'ROVI\n\n"
         f"👤 Ism: {user.full_name}\n"
-        f"📱 Telefon: {user.phone}\n\n"
+        f"📱 Telefon: {user.phone}\n"
+        f"🆔 Telegram ID: {message.from_user.id}\n\n"
         f"📍 Shahar: {data['city']}\n"
         f"📅 Kirish: {data['checkin']}\n"
         f"📅 Chiqish: {data['checkout']}\n"

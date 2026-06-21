@@ -21,12 +21,14 @@ async def visa_menu_handler(message: Message):
 
 
 @router.message(
-    F.text.in_([
-        "💼 Biznes vizasi",
-        "🕋 Umra vizasi",
-        "👩 Singil vizasi",
-        "📑 Multiple vizasi"
-    ])
+    F.text.in_(
+        [
+            "💼 Biznes vizasi",
+            "🕋 Umra vizasi",
+            "👩 Singil vizasi",
+            "📑 Multiple vizasi"
+        ]
+    )
 )
 async def visa_type_handler(message: Message):
 
@@ -35,10 +37,11 @@ async def visa_type_handler(message: Message):
     )
 
     await message.bot.send_message(
-        ADMIN_ID,
-        f"🛂 Yangi viza so'rovi\n\n"
+        GROUP_ID,
+        f"🛂 YANGI VIZA SO'ROVI\n\n"
         f"👤 Ism: {user.full_name}\n"
-        f"📱 Telefon: {user.phone}\n\n"
+        f"📱 Telefon: {user.phone}\n"
+        f"🆔 Telegram ID: {message.from_user.id}\n"
         f"📄 Viza turi: {message.text}"
     )
 

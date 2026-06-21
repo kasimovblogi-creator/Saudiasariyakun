@@ -16,7 +16,6 @@ async def ticket_start(
     message: Message,
     state: FSMContext
 ):
-
     await state.set_state(
         TicketState.waiting_from_city
     )
@@ -27,14 +26,11 @@ async def ticket_start(
     )
 
 
-@router.message(
-    TicketState.waiting_from_city
-)
+@router.message(TicketState.waiting_from_city)
 async def from_city_handler(
     message: Message,
     state: FSMContext
 ):
-
     await state.update_data(
         from_city=message.text
     )
@@ -49,14 +45,11 @@ async def from_city_handler(
     )
 
 
-@router.message(
-    TicketState.waiting_to_city
-)
+@router.message(TicketState.waiting_to_city)
 async def to_city_handler(
     message: Message,
     state: FSMContext
 ):
-
     await state.update_data(
         to_city=message.text
     )
@@ -71,14 +64,11 @@ async def to_city_handler(
     )
 
 
-@router.message(
-    TicketState.waiting_date
-)
+@router.message(TicketState.waiting_date)
 async def date_handler(
     message: Message,
     state: FSMContext
 ):
-
     data = await state.get_data()
 
     user = await UserRepository.get_by_telegram_id(
@@ -86,10 +76,11 @@ async def date_handler(
     )
 
     await message.bot.send_message(
-        ADMIN_ID,
-        f"✈️ Yangi aviabilet so'rovi\n\n"
+        GROUP_ID,
+        f"✈️ YANGI AVIABLET SO'ROVI\n\n"
         f"👤 Ism: {user.full_name}\n"
-        f"📱 Telefon: {user.phone}\n\n"
+        f"📱 Telefon: {user.phone}\n"
+        f"🆔 Telegram ID: {message.from_user.id}\n\n"
         f"🛫 Qayerdan: {data['from_city']}\n"
         f"🛬 Qayerga: {data['to_city']}\n"
         f"📅 Sana: {message.text}"
