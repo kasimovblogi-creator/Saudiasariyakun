@@ -51,9 +51,7 @@ async def start_handler(
         )
         return
 
-    await state.set_state(
-        RegisterState.waiting_phone
-    )
+    await state.set_state(RegisterState.waiting_phone)
 
     await message.answer(
         "📱 Telefon raqamingizni yuboring:",
@@ -66,45 +64,58 @@ async def phone_handler(
     message: Message,
     state: FSMContext
 ):
-    print("PHONE HANDLER ISHLADI")
-
     if not message.contact:
         await message.answer(
             "❗ Telefon raqamni tugma orqali yuboring."
         )
         return
 
-    await UserRepository.create_user(
-        telegram_id=message.from_user.id,
-        full_name=message.from_user.full_name,
-        phone=message.contact.phone_number,
-        username=message.from_user.username
-    )
-
-    user_count = await UserRepository.get_users_count()
-
     try:
-        await message.bot.send_message(
-            GROUP_ID,
-            f"🆕 Yangi foydalanuvchi qo'shildi\n\n"
-            f"👤 Ism: {message.from_user.full_name}\n"
-            f"📞 Telefon: {message.contact.phone_number}\n"
-            f"👤 Username: @{message.from_user.username if message.from_user.username else 'Mavjud emas'}\n"
-            f"🆔 Telegram ID: {message.from_user.id}\n\n"
-            f"📊 Umumiy foydalanuvchilar: {user_count}"
+        user = await UserRepository.get_by_telegram_id(
+            message.from_user.id
         )
+
+        if not user:
+            await UserRepository.create_user(
+                telegram_id=message.from_user.id,
+                full_name=message.from_user.full_name,
+                phone=message.contact.phone_number,
+                username=message.from_user.username
+            )
+
+        user_count = await UserRepository.get_users_count()
+
+        try:
+            await message.bot.send_message(
+                GROUP_ID,
+                f"🆕 Yangi foydalanuvchi qo'shildi\n\n"
+                f"👤 Ism: {message.from_user.full_name}\n"
+                f"📞 Telefon: {message.contact.phone_number}\n"
+                f"👤 Username: @{message.from_user.username if message.from_user.username else 'Mavjud emas'}\n"
+                f"🆔 Telegram ID: {message.from_user.id}\n\n"
+                f"📊 Umumiy foydalanuvchilar: {user_count}"
+            )
+        except Exception as e:
+            print(f"GROUP ERROR: {e}")
+
+        await state.clear()
+
+        await message.answer(
+            f"✅ Ro'yxatdan o'tish muvaffaqiyatli yakunlandi!\n\n"
+            f"🤝 Assalomu alaykum, {message.from_user.full_name}!\n\n"
+            f"🇸🇦 Saudiya Sari platformasiga xush kelibsiz.\n\n"
+            f"📚 Botdan to'liq foydalanish uchun quyidagi menyudan kerakli xizmatni tanlang.\n\n"
+            f"🎁 Bepul qo'llanmani ko'rish:\n"
+            f"https://youtu.be/RKblPCGf0TQ\n\n"
+            f"👨‍💼 Administrator bilan hoziroq bog'lanish:\n"
+            f"👉 @saudia_sari\n\n"
+            f"📌 Quyidagi menyudan kerakli xizmatni tanlang.",
+            reply_markup=main_menu
+        )
+
     except Exception as e:
-        print("GROUP XATOSI:", e)
+        print(f"PHONE HANDLER ERROR: {e}")
 
-    await state.clear()
-
-    await message.answer(
-        f"✅ Ro'yxatdan o'tish muvaffaqiyatli yakunlandi!\n\n"
-        f"🤝 Assalomu alaykum, {message.from_user.full_name}!\n\n"
-        f"🇸🇦 Saudiya Sari platformasiga xush kelibsiz.\n\n"
-        f"🎁 Bepul qo'llanma:\n"
-        f"https://youtu.be/RKblPCGf0TQ\n\n"
-        f"👨‍💼 Administrator:\n"
-        f"@saudia_sari",
-        reply_markup=main_menu
-    )
+        await message.answer(
+            "❌ Ro'yxatdan o'tishda xatolik yuz berdi. Iltimos /start ni qayta bosing."
+        )
