@@ -2,7 +2,7 @@ from aiogram import Router, F
 from aiogram.types import Message
 from aiogram.fsm.context import FSMContext
 
-from app.config.settings import ADMIN_ID
+from app.config.settings import GROUP_ID
 from app.repositories.user_repository import UserRepository
 
 from app.states.hotel import HotelState

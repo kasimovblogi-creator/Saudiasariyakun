@@ -2,7 +2,7 @@ from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-from app.config.settings import ADMIN_ID
+from app.config.settings import GROUP_ID
 from app.repositories.user_repository import UserRepository
 
 router = Router()
